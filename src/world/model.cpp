@@ -41,7 +41,6 @@ inline float Model::edge_function(const vec_t<float>& a, const vec_t<float>& b, 
     return (cx - a[0] + 0.5f) * (b[1] - a[1]) - (cy - a[1] + 0.5f) * (b[0] - a[0]);
 }
 
-#include <iostream>
 void Model::render(GraphicsContext& context, mat_t<float> transform) {
     const color_t color(255, 255, 255);
     vec_t<float> p1(0.0f), p2(0.0f), p3(0.0f);
