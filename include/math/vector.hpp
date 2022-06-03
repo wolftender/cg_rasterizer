@@ -61,6 +61,7 @@ template <typename T> class vec_t {
             m_buffer[0] = m_buffer[0] / m_buffer[3];
             m_buffer[1] = m_buffer[1] / m_buffer[3];
             m_buffer[2] = m_buffer[2] / m_buffer[3];
+            m_buffer[3] = 1.0f;
         }
 };
 

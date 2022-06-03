@@ -84,14 +84,13 @@ void Model::render(GraphicsContext& context, mat_t<float> transform) {
                 float w3 = edge_function(p1, p2, x, y);
 
                 if (w1 >= 0.0f && w2 >= 0.0f && w3 >= 0.0f) {
-                    float depth = 1.0f / (w1 / p1[2] + w2 / p2[2] + w3 / p3[2]);
-                    std::cout<<depth<<std::endl;
+                    w1 = w1 / area;
+                    w2 = w2 / area;
+                    w3 = w3 / area;
 
+                    float depth = (w1 / p1[2] + w2 / p2[2] + w3 / p3[2]);
+                    
                     if (context.set_depth(x, y, depth)) {
-                        w1 = w1 / area;
-                        w2 = w2 / area;
-                        w3 = w3 / area;
-
                         color.r = w1 * triangle.c1.r + w2 * triangle.c2.r + w3 * triangle.c3.r;
                         color.g = w1 * triangle.c1.g + w2 * triangle.c2.g + w3 * triangle.c3.g;
                         color.b = w1 * triangle.c1.b + w2 * triangle.c2.b + w3 * triangle.c3.b;

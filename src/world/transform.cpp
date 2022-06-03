@@ -61,8 +61,8 @@ mat_t<float> perspective(unsigned int width, unsigned int height, float fov) {
     const float cy = height / 2.0f;
 
     return mat_t<float> (
-        -d,    0.0f, cx,   0.0f,
-        0.0f, d,    cy,   0.0f,
+        d,    0.0f, cx,   0.0f,
+        0.0f, -d,   cy,   0.0f,
         0.0f, 0.0f, 0.0f, 1.0f,
         0.0f, 0.0f, 1.0f, 0.0f
     );
@@ -82,9 +82,9 @@ mat_t<float> look_at(vec_t<float> pos, vec_t<float> at) {
     up.normalize();
 
     return mat_t<float>(
-        right[0], right[1], right[2], 0.0f,
-        up[0], up[1], up[2], 0.0f,
-        forward[0], forward[1], forward[2], 0.0f,
+        right[0], right[1], right[2], right.dot(pos),
+        up[0], up[1], up[2], up.dot(pos),
+        forward[0], forward[1], forward[2], forward.dot(pos),
         0.0f, 0.0f, 0.0f, 1.0f
-    ) * translation(vec_t<float>(-pos[0], -pos[1], -pos[2]));
+    );
 }

@@ -53,15 +53,14 @@ int main(int argc, char ** argv) {
 }
 
 void run(SDL_Window * window) {
-    std::cout << "a" << std::endl;
     GraphicsContext * context = new GraphicsContext(window, window_width / 2, window_height / 2);
-    std::cout << "b" << std::endl;
     Model * test_shape = generate_test_shape();
 
     mat_t<float> view_matrix = perspective(window_width / 2, window_height / 2, M_PIf / 6.0f);
     mat_t<float> position = translation(vec_t<float>(1.0f, 2.0f, 35.0f));
     mat_t<float> position2 = translation(vec_t<float>(-1.0f, 0.0f, 19.0f));
-    mat_t<float> cam_matrix = look_at(vec_t<float>(10,0,0), vec_t<float>(0,0,27));
+    mat_t<float> cam_matrix = identity();
+    mat_t<float> rot_matrix = rotation_y(0.0f);
     std::cout << cam_matrix << std::endl;
     
     float angle = 0.0f;
@@ -69,13 +68,14 @@ void run(SDL_Window * window) {
     bool running = true;
     while (running) {
         angle += 0.02f;
-        cam_matrix = identity();
+        position = translation(vec_t<float>(1.0f, 2.0f, 35.0f - angle));
+        rot_matrix = rotation_y(angle);
         
         SDL_Event event;
 
         context->clear();
         test_shape->render(*context, view_matrix * cam_matrix * position);
-        test_shape->render(*context, view_matrix * cam_matrix * position2);
+        test_shape->render(*context, view_matrix * cam_matrix * position2 * rot_matrix);
         context->present();
 
         while (SDL_PollEvent(&event)) {
