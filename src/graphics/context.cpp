@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <exception>
 #include <iostream>
+#include <string>
 
 #include "graphics/context.hpp"
 

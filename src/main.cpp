@@ -4,6 +4,7 @@
 #include <exception>
 #include <vector>
 
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -16,7 +17,6 @@ const unsigned int window_width = 1366;
 const unsigned int window_height = 768;
 
 void run(SDL_Window * window);
-void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2);
 Model * generate_test_shape();
 
 int main(int argc, char ** argv) {
@@ -26,14 +26,14 @@ int main(int argc, char ** argv) {
 
     if (TTF_Init() < 0) {
         throw std::runtime_error("failed to initialize font engine");
-    }   
+    }
 
     // set vsync and better quality
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
 
     unsigned int flags = SDL_WINDOW_SHOWN;
-    SDL_Window * window = SDL_CreateWindow("computer graphics", 
+    SDL_Window * window = SDL_CreateWindow("computer graphics",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window_width, window_height, flags);
 
     if (!window) {
@@ -56,7 +56,7 @@ void run(SDL_Window * window) {
     GraphicsContext * context = new GraphicsContext(window, window_width / 2, window_height / 2);
     Model * test_shape = generate_test_shape();
 
-    mat_t<float> view_matrix = perspective(window_width / 2, window_height / 2, M_PIf / 6.0f);
+    mat_t<float> view_matrix = perspective(window_width / 2, window_height / 2, PI_f / 6.0f);
     mat_t<float> position = translation(vec_t<float>(1.0f, 2.0f, 35.0f));
     mat_t<float> position2 = translation(vec_t<float>(-1.0f, 0.0f, 19.0f));
     mat_t<float> cam_matrix = identity();

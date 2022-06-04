@@ -5,6 +5,8 @@
 
 #include "matrix.hpp"
 
+constexpr float PI_f = 3.14159265358f;
+
 template <typename T> class vec_t {
     private:
         T m_buffer[4];
