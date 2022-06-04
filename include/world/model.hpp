@@ -8,10 +8,6 @@
 
 #include "graphics/context.hpp"
 
-struct vertex_t {
-
-};
-
 class Model {
     private:
         struct triangle_t {

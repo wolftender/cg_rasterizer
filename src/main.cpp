@@ -7,6 +7,7 @@
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 #include "math/vector.hpp"
 #include "world/transform.hpp"
@@ -22,6 +23,10 @@ Model * generate_test_shape();
 int main(int argc, char ** argv) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         throw std::runtime_error("failed to initialize sdl2");
+    }
+
+    if (IMG_Init(IMG_INIT_PNG) < 0) {
+        throw std::runtime_error("failed to initialize image loading");
     }
 
     if (TTF_Init() < 0) {
@@ -47,6 +52,7 @@ int main(int argc, char ** argv) {
 
     // cleanup sdl
     TTF_Quit();
+    IMG_Quit();
     SDL_Quit();
 
     return 0;

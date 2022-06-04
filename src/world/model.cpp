@@ -48,7 +48,7 @@ void Model::render(GraphicsContext& context, mat_t<float> transform) {
     int width = context.get_width();
     int height = context.get_height();
 
-    for (auto triangle : m_triangles) {
+    for (const triangle_t& triangle : m_triangles) {
         p1 = transform * triangle.p1;
         p2 = transform * triangle.p2;
         p3 = transform * triangle.p3;
