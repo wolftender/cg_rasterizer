@@ -116,7 +116,7 @@ Model * generate_test_shape() {
         4, 5, 0, 0, 5, 1
     };
 
-    std::vector<float> colors = {
+    /*std::vector<float> colors = {
         255.0f, 0.0f, 0.0f,
         0.0f, 255.0f, 0.0f,
         0.0f, 0.0f, 255.0f,
@@ -125,7 +125,14 @@ Model * generate_test_shape() {
         0.0f, 0.0f, 255.0f,
         255.0f, 0.0f, 0.0f,
         0.0f, 255.0f, 0.0f
+    };*/
+
+    std::vector<float> tex_coords = {
+        0, 0,
+        1, 0,
+        1, 1,
+        0, 1
     };
 
-    return new Model(positions, indices, colors);
+    return new Model(positions, indices, tex_coords, Texture("assets/texture.png"));
 }

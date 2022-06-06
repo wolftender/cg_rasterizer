@@ -1,7 +1,7 @@
 #include "world/model.hpp"
 #include <algorithm>
 
-Model::Model(std::vector<float> pos, std::vector<unsigned int> ind, std::vector<float> col) {
+Model::Model(std::vector<float> pos, std::vector<unsigned int> ind, std::vector<float> tex, const Texture & texture) {
     const unsigned int num_positions = pos.size();
     const unsigned int num_indices = ind.size();
 
@@ -15,8 +15,10 @@ Model::Model(std::vector<float> pos, std::vector<unsigned int> ind, std::vector<
 
     const unsigned int num_edges = num_indices / 3;
     unsigned int base_index_1, base_index_2, base_index_3;
+    unsigned int tex_index_1, tex_index_2, tex_index_3;
 
     m_triangles.resize(num_edges);
+    m_texture = texture;
 
     for (unsigned int i = 0; i < num_edges; ++i) {
         base_index_1 = 3 * ind[3 * i + 0];
@@ -27,10 +29,32 @@ Model::Model(std::vector<float> pos, std::vector<unsigned int> ind, std::vector<
         m_triangles[i].p2.set(pos[base_index_2 + 0], pos[base_index_2 + 1], pos[base_index_2 + 2], 1.0f);
         m_triangles[i].p3.set(pos[base_index_3 + 0], pos[base_index_3 + 1], pos[base_index_3 + 2], 1.0f);
 
-        m_triangles[i].c1 = color_t(col[base_index_1 + 0], col[base_index_1 + 1], col[base_index_1 + 2]);
-        m_triangles[i].c2 = color_t(col[base_index_2 + 0], col[base_index_2 + 1], col[base_index_2 + 2]);
-        m_triangles[i].c3 = color_t(col[base_index_3 + 0], col[base_index_3 + 1], col[base_index_3 + 2]);
+        //m_triangles[i].c1 = color_t(col[base_index_1 + 0], col[base_index_1 + 1], col[base_index_1 + 2]);
+        //m_triangles[i].c2 = color_t(col[base_index_2 + 0], col[base_index_2 + 1], col[base_index_2 + 2]);
+        //m_triangles[i].c3 = color_t(col[base_index_3 + 0], col[base_index_3 + 1], col[base_index_3 + 2]);
+
+        tex_index_1 = (2 * ind[3 * i + 0]) % tex.size();
+        tex_index_2 = (2 * ind[3 * i + 1]) % tex.size();
+        tex_index_3 = (2 * ind[3 * i + 2]) % tex.size();
+
+        m_triangles[i].t1 = tex_coords_t(tex[tex_index_1 + 0], tex[tex_index_1 + 1]);
+        m_triangles[i].t2 = tex_coords_t(tex[tex_index_2 + 0], tex[tex_index_2 + 1]);
+        m_triangles[i].t3 = tex_coords_t(tex[tex_index_3 + 0], tex[tex_index_3 + 1]);
     }
+}
+
+inline void Model::sample_texture(float u, float v, color_t & out_color) {
+    const int tex_width = m_texture.get_width();
+    const int tex_height = m_texture.get_height();
+    const std::vector<uint8_t>& tex_buffer = m_texture.get_buffer();
+
+    int x = ((int)(u * tex_width)) % tex_width;
+    int y = ((int)(v * tex_height)) % tex_height;
+    int index = 4 * (y * tex_width + x);
+
+    out_color.r = tex_buffer[index + 0];
+    out_color.g = tex_buffer[index + 1];
+    out_color.b = tex_buffer[index + 2];
 }
 
 inline float Model::edge_function(const vec_t<float>& a, const vec_t<float>& b, const vec_t<float>& c) {
@@ -76,6 +100,8 @@ void Model::render(GraphicsContext& context, mat_t<float> transform) {
         vec_t<float> p(0.0f);
         color_t color;
 
+        float u, v;
+
         for (int y = min_y; y < max_y; ++y) {
             for (int x = min_x; x < max_x; ++x) {
                 float w1 = edge_function(p2, p3, x, y);
@@ -87,13 +113,17 @@ void Model::render(GraphicsContext& context, mat_t<float> transform) {
                     w2 = w2 / area;
                     w3 = w3 / area;
 
-                    float depth = (w1 / p1[2] + w2 / p2[2] + w3 / p3[2]);
+                    float depth = 1.0f / (w1 * p1[2] + w2 * p2[2] + w3 * p3[2]);
                     
                     if (context.set_depth(x, y, depth)) {
-                        color.r = w1 * triangle.c1.r + w2 * triangle.c2.r + w3 * triangle.c3.r;
-                        color.g = w1 * triangle.c1.g + w2 * triangle.c2.g + w3 * triangle.c3.g;
-                        color.b = w1 * triangle.c1.b + w2 * triangle.c2.b + w3 * triangle.c3.b;
+                        //color.r = w1 * triangle.c1.r + w2 * triangle.c2.r + w3 * triangle.c3.r;
+                        //color.g = w1 * triangle.c1.g + w2 * triangle.c2.g + w3 * triangle.c3.g;
+                        //color.b = w1 * triangle.c1.b + w2 * triangle.c2.b + w3 * triangle.c3.b;
 
+                        u = w1 * triangle.t1.u + w2 * triangle.t2.u + w3 * triangle.t3.u;
+                        v = w1 * triangle.t1.v + w2 * triangle.t2.v + w3 * triangle.t3.v;
+
+                        sample_texture(u, v, color);
                         context.set_pixel(x, y, color);
                     }
                 }
