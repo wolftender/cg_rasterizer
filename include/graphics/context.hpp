@@ -22,8 +22,8 @@ class GraphicsContext {
         unsigned int m_width;
         unsigned int m_height;
 
-        std::vector<uint8_t> m_buffer;
-        std::vector<float> m_depthBuffer;
+        uint8_t * m_buffer = nullptr;
+        float * m_depthBuffer = nullptr;
         
         std::chrono::steady_clock::time_point m_last_frame;
         unsigned int m_frames, m_frameTimer, m_fpsAvg;
@@ -35,6 +35,9 @@ class GraphicsContext {
     public:
         GraphicsContext(SDL_Window * window, unsigned int resX, unsigned int resY);
         ~GraphicsContext();
+
+        GraphicsContext(const GraphicsContext&) = delete;
+        GraphicsContext& operator=(const GraphicsContext&) = delete;
 
         void clear();
         void present();

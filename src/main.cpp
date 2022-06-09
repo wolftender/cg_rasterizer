@@ -62,26 +62,34 @@ void run(SDL_Window * window) {
     GraphicsContext * context = new GraphicsContext(window, window_width / 2, window_height / 2);
     Model * test_shape = generate_test_shape();
 
-    mat_t<float> view_matrix = perspective(window_width / 2, window_height / 2, PI_f / 6.0f);
-    mat_t<float> position = translation(vec_t<float>(1.0f, 2.0f, 35.0f));
-    mat_t<float> position2 = translation(vec_t<float>(-1.0f, 0.0f, 19.0f)) * scale(vec_t<float>(1.0f, 1.0f, 1.0f));
-    mat_t<float> cam_matrix = look_at(vec_t<float>(0,10,0), vec_t<float>(-1,0,19));
-    mat_t<float> rot_matrix = rotation_y(0.0f);
-    std::cout << cam_matrix << std::endl;
-    
-    float angle = 0.0f;
+    mat_t<float> projection_mat = perspective(window_width / 2, window_height / 2, PI_f / 3.0f);
 
+    // positions of cubes
+    mat_t<float> position_1 = translation(vec_t<float>(1.0f, 2.0f, 35.0f));
+    mat_t<float> position_2 = translation(vec_t<float>(-1.0f, 0.0f, 19.0f));
+
+    // view matrix
+    mat_t<float> view_mat = look_at(vec_t<float>(0,5,0), vec_t<float>(-1,0,19));
+
+    // rotation of time
+    mat_t<float> rot_matrix = rotation_y(0.0f);
+    
+    // variables for main loop
+    float angle = 0.0f;
     bool running = true;
+
     while (running) {
         angle += 0.01f;
-        position = translation(vec_t<float>(1.0f, 2.0f, 35.0f - angle));
+
+        // time dependant transforms
+        position_1 = translation(vec_t<float>(1.0f, 2.0f, 35.0f - angle));
         rot_matrix = rotation_y(angle);
         
         SDL_Event event;
 
         context->clear();
-        test_shape->render(*context, view_matrix * cam_matrix * position);
-        test_shape->render(*context, view_matrix * cam_matrix * position2 * rot_matrix);
+        test_shape->render(*context, projection_mat, view_mat * position_1);
+        test_shape->render(*context, projection_mat, view_mat * position_2 * rot_matrix);
         context->present();
 
         while (SDL_PollEvent(&event)) {

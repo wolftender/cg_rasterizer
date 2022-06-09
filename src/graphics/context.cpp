@@ -47,14 +47,17 @@ GraphicsContext::~GraphicsContext() {
     if (m_renderer) {
         SDL_DestroyRenderer(m_renderer);
     }
+
+    delete m_buffer;
+    delete m_depthBuffer;
 }
 
 void GraphicsContext::clear() {
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(m_renderer);
 
-    std::fill(m_buffer.begin(), m_buffer.end(), 0);
-    std::fill(m_depthBuffer.begin(), m_depthBuffer.end(), std::numeric_limits<float>::max());
+    std::fill(m_buffer, m_buffer + m_width * m_height * 4, 0);
+    std::fill(m_depthBuffer, m_depthBuffer + m_width * m_height, std::numeric_limits<float>::max());
 }
 
 void GraphicsContext::present() {
@@ -71,7 +74,7 @@ void GraphicsContext::present() {
     }
 
     // render frame
-    SDL_UpdateTexture(m_texture, nullptr, m_buffer.data(), m_width * 4);
+    SDL_UpdateTexture(m_texture, nullptr, m_buffer, m_width * 4);
     SDL_RenderCopy(m_renderer, m_texture, nullptr, nullptr);
 
     render_text(30, 30, std::string("fps: " + std::to_string(m_fpsAvg)).c_str());
@@ -88,12 +91,20 @@ void GraphicsContext::setup_texture() {
     m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, 
         SDL_TEXTUREACCESS_STREAMING, m_width, m_height);
 
-    m_depthBuffer.resize(m_width * m_height);
-    m_buffer.resize(m_width * m_height * 4);
+    if (m_depthBuffer) {
+        delete [] m_depthBuffer;
+    }
+
+    if (m_buffer) {
+        delete [] m_buffer;
+    }
+
+    m_depthBuffer = new float[m_width * m_height];
+    m_buffer = new uint8_t[m_width * m_height * 4];
 }
 
 bool GraphicsContext::set_depth(unsigned int x, unsigned int y, float depth) {
-    if (depth < 5) return false;
+    if (depth < 19) return false;
     int index = x + y * m_width;
 
     if (depth < m_depthBuffer[index]) {
