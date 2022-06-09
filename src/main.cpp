@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <exception>
 #include <vector>
+#include <chrono>
 
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
@@ -13,6 +14,7 @@
 #include "math/transform.hpp"
 
 #include "world/level.hpp"
+#include "world/cube.hpp"
 
 const unsigned int window_width = 1366;
 const unsigned int window_height = 768;
@@ -61,6 +63,10 @@ void run(SDL_Window * window) {
     GraphicsContext * context = new GraphicsContext(window, window_width / 2, window_height / 2);
     Level * level = new Level();
 
+    Cube& cube = level->add_entity<Cube>();
+    cube.set_position(vec_t<float>(1.0f, 2.0f, 35.0f));
+
+    auto last_time = std::chrono::steady_clock::now();
     mat_t<float> projection_mat = perspective(window_width / 2, window_height / 2, PI_f / 3.0f);
 
     bool running = true;
@@ -68,8 +74,15 @@ void run(SDL_Window * window) {
     while (running) {        
         SDL_Event event;
 
+        auto now = std::chrono::steady_clock::now();
+        float elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_time).count() / 1000.0f;
+
+        last_time = now;
+
+        level->update(elapsed);
+
         context->clear();
-        
+        level->render(*context, projection_mat);
         context->present();
 
         while (SDL_PollEvent(&event)) {
@@ -82,34 +95,3 @@ void run(SDL_Window * window) {
     delete level;
     delete context;
 }
-
-/*Model * generate_test_shape() {
-    std::vector<float> positions = {
-        -1, -1, -1,
-        1, -1, -1,
-        1, 1, -1,
-        -1, 1, -1,
-        -1, -1, 1,
-        1, -1, 1,
-        1, 1, 1,
-        -1, 1, 1
-    };
-
-    std::vector<unsigned int> indices = { 
-        0, 1, 3, 3, 1, 2,
-        1, 5, 2, 2, 5, 6,
-        5, 4, 6, 6, 4, 7,
-        4, 0, 7, 7, 0, 3,
-        3, 2, 7, 7, 2, 6,
-        4, 5, 0, 0, 5, 1
-    };
-
-    std::vector<float> tex_coords = {
-        0, 0,
-        1, 0,
-        1, 1,
-        0, 1
-    };
-
-    return new Model(positions, indices, tex_coords, Texture("assets/cobblestone.png"));
-}*/

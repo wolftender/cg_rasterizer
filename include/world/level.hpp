@@ -56,6 +56,7 @@ class Level {
 				throw std::runtime_error("too many entities");
 			}
 
-			m_entities[entity_id] = std::make_unique<T>(args);
+			m_entities[entity_id] = std::make_unique<T>(args...);
+			return *(reinterpret_cast<T*>(m_entities[entity_id].get()));
 		}
 };

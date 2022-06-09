@@ -1,7 +1,11 @@
 #pragma once
 #include "world/entity.hpp"
+#include "graphics/model.hpp"
 
 class Cube : public Entity {
+	private:
+		Model m_model;
+
 	public:
 		Cube();
 

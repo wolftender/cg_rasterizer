@@ -24,6 +24,8 @@ Level::Level() :
 	m_camera_eye(0.0f), 
 	m_view_matrix(identity()) {
 
+	m_last_id = 0;
+
 	for (std::size_t i = 0; i < max_entities; ++i) {
 		m_entities[i] = nullptr;
 	}

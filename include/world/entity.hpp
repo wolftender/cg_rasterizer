@@ -15,6 +15,8 @@ class Entity {
 		bool m_recalculate_matrix = true;
 
 	public:
+		Entity();
+
 		const vec_t<float> & get_position();
 		const vec_t<float> & get_rotation();
 		const vec_t<float> & get_scale();

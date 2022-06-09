@@ -1,6 +1,12 @@
 #include "world/entity.hpp"
 #include "math/transform.hpp"
 
+Entity::Entity() :
+    m_position(0.0f),
+    m_scale(1.0f),
+    m_rotation(0.0f),
+    m_world(identity()) { }
+
 const vec_t<float> & Entity::get_position() {
     return m_position;
 }
