@@ -82,7 +82,7 @@ void run(SDL_Window * window) {
         angle += 0.01f;
 
         // time dependant transforms
-        position_1 = translation(vec_t<float>(1.0f, 2.0f, 35.0f - angle));
+        position_1 = translation(vec_t<float>(1.0f, 2.0f, 35.0f - angle * 3));
         rot_matrix = rotation_y(angle);
         
         SDL_Event event;

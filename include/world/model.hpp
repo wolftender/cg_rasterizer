@@ -11,18 +11,19 @@
 
 class Model {
     private:
-        struct tex_coords_t {
+        struct vertex_t {
+            vec_t<float> pos;
             float u, v;
 
-            tex_coords_t() : u(0.0), v(0.0) { }
-            tex_coords_t(float u, float v) : u(u), v(v) { }
+            vertex_t() : pos(0.0f), u(0.0f), v(0.0f) { }
+            vertex_t(const vec_t<float>& pos, float u, float v) : pos(pos), u(u), v(v) { }
+            vertex_t(float x, float y, float z, float u, float v) : pos(x, y, z), u(u), v(v) { }
         };
 
         struct triangle_t {
-            vec_t<float> p1, p2, p3;
-            tex_coords_t t1, t2, t3;
-
-            triangle_t() : p1(0.0f), p2(0.0f), p3(0.0f) { }
+            vertex_t v1, v2, v3;
+            triangle_t() { }
+            triangle_t(const vertex_t& v1, const vertex_t& v2, const vertex_t& v3) : v1(v1), v2(v2), v3(v3) { }
         };
 
         Texture m_texture;
@@ -37,6 +38,12 @@ class Model {
         void fill_triangle(GraphicsContext& context, triangle_t& triangle, const mat_t<float>& projection);
 
         // inline functions
+        inline float signed_distance(const vec_t<float>& normal, float d, const vec_t<float>& point);
+        inline float intersect(const vec_t<float>& v1, const vec_t<float>& v2, const vec_t<float>& normal, float d);
+
+        inline void clip_triangle(const vec_t<float>& normal, float d, vertex_t& v1, vertex_t& v2, vertex_t& v3);
+        inline void clip_triangle(const vec_t<float>& normal, float d, vertex_t& v1, vertex_t& v2, vertex_t& v3, triangle_t& out_t1, triangle_t& out_t2);
+        
         inline void sample_texture(float u, float v, color_t & out_color);
         inline float edge_function(const vec_t<float>& a, const vec_t<float>& b, const vec_t<float>& c);
         inline float edge_function(const vec_t<float>& a, const vec_t<float>& b, int cx, int cy);

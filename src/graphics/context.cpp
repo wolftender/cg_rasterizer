@@ -104,7 +104,6 @@ void GraphicsContext::setup_texture() {
 }
 
 bool GraphicsContext::set_depth(unsigned int x, unsigned int y, float depth) {
-    if (depth < 19) return false;
     int index = x + y * m_width;
 
     if (depth < m_depthBuffer[index]) {

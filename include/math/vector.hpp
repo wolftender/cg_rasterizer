@@ -84,6 +84,10 @@ template<typename T> vec_t<T> cross(const vec_t<T>& a, const vec_t<T>& b) {
     );
 }
 
+template<typename T> vec_t<T> operator*(const T a, const vec_t<T>& v) {
+    return vec_t<T>(a * v[0], a * v[1], a * v[2], v[3]);
+}
+
 template<typename T> vec_t<T> operator+(const vec_t<T>& a, const vec_t<T>& b) {
     return vec_t<T>(a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]);
 }
