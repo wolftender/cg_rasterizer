@@ -15,6 +15,7 @@
 
 #include "world/level.hpp"
 #include "world/cube.hpp"
+#include "world/maze.hpp"
 
 const unsigned int window_width = 1366;
 const unsigned int window_height = 768;
@@ -61,10 +62,10 @@ int main(int argc, char ** argv) {
 
 void run(SDL_Window * window) {
     GraphicsContext * context = new GraphicsContext(window, window_width / 2, window_height / 2);
-    Level * level = new Level();
+    Level * level = new Maze(15, 15);
 
     Cube& cube = level->add_entity<Cube>();
-    cube.set_position(vec_t<float>(1.0f, 2.0f, 35.0f));
+    cube.set_position(vec_t<float>(0.0f, 0.0f, 10.0f));
 
     auto last_time = std::chrono::steady_clock::now();
     mat_t<float> projection_mat = perspective(window_width / 2, window_height / 2, PI_f / 3.0f);

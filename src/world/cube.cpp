@@ -1,6 +1,6 @@
 #include "world/cube.hpp"
 
-Model generate_cube_model(std::string texture) {
+Model Cube::generate_cube_model(std::string texture) {
     std::vector<float> positions = {
         -1, -1, -1,
         1, -1, -1,

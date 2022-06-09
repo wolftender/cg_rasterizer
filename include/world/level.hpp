@@ -38,8 +38,8 @@ class Level {
 		Level(const Level&) = delete;
 		Level& operator=(const Level&) = delete;
 
-		void render(GraphicsContext & context, const mat_t<float> & projection);
-		void update(float delta_time);
+		virtual void render(GraphicsContext & context, const mat_t<float> & projection);
+		virtual void update(float delta_time);
 
 		bool can_move(vec_t<float> position);
 		vec_t<float> get_start_pos();

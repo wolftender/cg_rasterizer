@@ -6,6 +6,9 @@ class Cube : public Entity {
 	private:
 		Model m_model;
 
+	private:
+		Model generate_cube_model(std::string texture);
+
 	public:
 		Cube();
 
