@@ -10,7 +10,7 @@ OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 CPPFLAGS := -Iinclude `pkg-config --cflags sdl2`
 CFLAGS := -Wall -O2
 LDFLAGS :=
-LDLIBS := `pkg-config --libs sdl2` -lSDL2_ttf
+LDLIBS := `pkg-config --libs sdl2` -lSDL2_ttf -lSDL2_image
 
 all: $(EXECUTABLE)
 .PHONY: all

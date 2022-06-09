@@ -64,8 +64,8 @@ void run(SDL_Window * window) {
 
     mat_t<float> view_matrix = perspective(window_width / 2, window_height / 2, PI_f / 6.0f);
     mat_t<float> position = translation(vec_t<float>(1.0f, 2.0f, 35.0f));
-    mat_t<float> position2 = translation(vec_t<float>(-1.0f, 0.0f, 19.0f));
-    mat_t<float> cam_matrix = identity();
+    mat_t<float> position2 = translation(vec_t<float>(-1.0f, 0.0f, 19.0f)) * scale(vec_t<float>(1.0f, 1.0f, 1.0f));
+    mat_t<float> cam_matrix = look_at(vec_t<float>(0,10,0), vec_t<float>(-1,0,19));
     mat_t<float> rot_matrix = rotation_y(0.0f);
     std::cout << cam_matrix << std::endl;
     
@@ -73,7 +73,7 @@ void run(SDL_Window * window) {
 
     bool running = true;
     while (running) {
-        angle += 0.02f;
+        angle += 0.01f;
         position = translation(vec_t<float>(1.0f, 2.0f, 35.0f - angle));
         rot_matrix = rotation_y(angle);
         

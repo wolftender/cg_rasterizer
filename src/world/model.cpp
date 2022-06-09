@@ -120,8 +120,8 @@ void Model::render(GraphicsContext& context, mat_t<float> transform) {
                         //color.g = w1 * triangle.c1.g + w2 * triangle.c2.g + w3 * triangle.c3.g;
                         //color.b = w1 * triangle.c1.b + w2 * triangle.c2.b + w3 * triangle.c3.b;
 
-                        u = w1 * triangle.t1.u + w2 * triangle.t2.u + w3 * triangle.t3.u;
-                        v = w1 * triangle.t1.v + w2 * triangle.t2.v + w3 * triangle.t3.v;
+                        u = (w1 * triangle.t1.u * p1[2] + w2 * triangle.t2.u * p2[2] + w3 * triangle.t3.u * p3[2]) * depth;
+                        v = (w1 * triangle.t1.v * p1[2] + w2 * triangle.t2.v * p2[2] + w3 * triangle.t3.v * p3[2]) * depth;
 
                         sample_texture(u, v, color);
                         context.set_pixel(x, y, color);

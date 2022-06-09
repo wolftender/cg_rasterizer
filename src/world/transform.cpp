@@ -55,6 +55,15 @@ mat_t<float> rotation_z(float theta) {
     );
 }
 
+mat_t<float> scale(vec_t<float> s) {
+    return mat_t<float> (
+        s[0], 0.0f, 0.0f, 0.0f,
+        0.0f, s[1], 0.0f, 0.0f,
+        0.0f, 0.0f, s[2], 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    );
+}
+
 mat_t<float> perspective(unsigned int width, unsigned int height, float fov) {
     const float d = width / (2.0f * tan(fov / 2.0f));
     const float cx = width / 2.0f;
@@ -70,7 +79,7 @@ mat_t<float> perspective(unsigned int width, unsigned int height, float fov) {
 
 mat_t<float> look_at(vec_t<float> pos, vec_t<float> at) {
     const vec_t<float> cam_up(0.0f, 1.0f, 0.0f);
-    const vec_t<float> dir = pos - at;
+    const vec_t<float> dir = at - pos;
 
     vec_t<float> forward = dir;
     forward.normalize();
@@ -82,9 +91,9 @@ mat_t<float> look_at(vec_t<float> pos, vec_t<float> at) {
     up.normalize();
 
     return mat_t<float>(
-        right[0], right[1], right[2], right.dot(pos),
-        up[0], up[1], up[2], up.dot(pos),
-        forward[0], forward[1], forward[2], forward.dot(pos),
+        right[0], right[1], right[2], -right.dot(pos),
+        up[0], up[1], up[2], -up.dot(pos),
+        forward[0], forward[1], forward[2], -forward.dot(pos),
         0.0f, 0.0f, 0.0f, 1.0f
     );
 }
