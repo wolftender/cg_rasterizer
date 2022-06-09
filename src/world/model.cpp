@@ -126,7 +126,7 @@ inline void Model::clip_triangle(const vec_t<float>& normal, float d, vertex_t& 
 void Model::render(GraphicsContext& context, const mat_t<float>& projection, const mat_t<float>& world_view) {
     // clipping plane (const)
     static const vec_t<float> clip_normal(0.0f, 0.0f, 1.0f);
-    static const float clip_d = 19.0f;
+    static const float clip_d = 1.0f;
 
     const color_t color(255, 255, 255);
 
