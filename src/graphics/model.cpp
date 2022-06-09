@@ -1,4 +1,4 @@
-#include "world/model.hpp"
+#include "graphics/model.hpp"
 
 #include <thread>
 #include <algorithm>
