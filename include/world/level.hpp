@@ -32,7 +32,7 @@ class Level {
 
 	public:
 		Level();
-		~Level();
+		virtual ~Level();
 
 		// delete copy
 		Level(const Level&) = delete;

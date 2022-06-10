@@ -30,12 +30,15 @@ const mat_t<float> & Entity::get_world() {
 
 void Entity::set_position(const vec_t<float> & position) {
     m_position = position;
+    m_recalculate_matrix = true;
 }
 
 void Entity::set_rotation(const vec_t<float> & rotation) {
     m_rotation = rotation;
+    m_recalculate_matrix = true;
 }
 
 void Entity::set_scale(const vec_t<float> & scale) {
     m_scale = scale;
+    m_recalculate_matrix = true;
 }

@@ -1,6 +1,9 @@
 #pragma once
 #include "world/level.hpp"
+#include "graphics/model.hpp"
+
 #include <vector>
+#include <memory>
 
 class Maze : public Level {
 	private:
@@ -15,11 +18,13 @@ class Maze : public Level {
 		};
 
 		std::vector<map_square_t> m_map_buffer;
-		unsigned int m_width;
-		unsigned int m_height;
+		int m_width;
+		int m_height;
+
+		std::unique_ptr<Model> m_model;
 
 	public:
-		Maze(unsigned int width, unsigned int height);
+		Maze(int width, int height);
 
 		void render(GraphicsContext & context, const mat_t<float> & projection) override;
 		void update(float delta_time) override;
@@ -28,6 +33,7 @@ class Maze : public Level {
 		inline bool valid_neighbor(const map_square_pos_t& pos);
 		inline unsigned int get_index(const map_square_pos_t& pos);
 		void generate_maze();
+		void generate_mesh();
 
 	friend std::ostream & operator<<(std::ostream & stream, const Maze & maze);
 };

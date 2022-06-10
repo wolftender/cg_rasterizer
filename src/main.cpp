@@ -82,6 +82,11 @@ void run(SDL_Window * window) {
 
         level->update(elapsed);
 
+        vec_t<float> rot = cube.get_rotation();
+        rot[1] += elapsed;
+        rot[0] += elapsed;
+        cube.set_rotation(rot);
+
         context->clear();
         level->render(*context, projection_mat);
         context->present();

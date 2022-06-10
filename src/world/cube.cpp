@@ -24,8 +24,10 @@ Model Cube::generate_cube_model(std::string texture) {
     std::vector<float> tex_coords = {
         0, 0,
         1, 0,
-        1, 1,
-        0, 1
+        0, 1,
+        0, 1,
+        1, 0,
+        1, 1
     };
 
     return Model(positions, indices, tex_coords, Texture(texture));
@@ -37,5 +39,5 @@ void Cube::update(Level & level, float delta_time) { }
 
 void Cube::render(GraphicsContext & context, const mat_t<float> & projection, const mat_t<float> & view) {
     mat_t<float> world_view = view * get_world();
-    m_model.render(context, projection, get_world());
+    m_model.render(context, projection, world_view);
 }

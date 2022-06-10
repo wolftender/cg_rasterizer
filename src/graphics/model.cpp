@@ -35,9 +35,9 @@ Model::Model(std::vector<float> pos, std::vector<unsigned int> ind, std::vector<
         //m_triangles[i].c2 = color_t(col[base_index_2 + 0], col[base_index_2 + 1], col[base_index_2 + 2]);
         //m_triangles[i].c3 = color_t(col[base_index_3 + 0], col[base_index_3 + 1], col[base_index_3 + 2]);
 
-        tex_index_1 = (2 * ind[3 * i + 0]) % tex.size();
-        tex_index_2 = (2 * ind[3 * i + 1]) % tex.size();
-        tex_index_3 = (2 * ind[3 * i + 2]) % tex.size();
+        tex_index_1 = (2 * (3 * i + 0)) % tex.size();
+        tex_index_2 = (2 * (3 * i + 1)) % tex.size();
+        tex_index_3 = (2 * (3 * i + 2)) % tex.size();
 
         m_triangles[i].v1.u = tex[tex_index_1 + 0];
         m_triangles[i].v1.v = tex[tex_index_1 + 1];

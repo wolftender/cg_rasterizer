@@ -4,7 +4,7 @@
 #include <stack>
 #include <random>
 
-Maze::Maze(unsigned int width, unsigned int height) {
+Maze::Maze(int width, int height) {
 	m_width = width;
 	m_height = height;
 
@@ -13,12 +13,15 @@ Maze::Maze(unsigned int width, unsigned int height) {
 	}
 
 	generate_maze();
+	generate_mesh();
 }
 
 void Maze::render(GraphicsContext & context, const mat_t<float> & projection) {
+	Level::render(context, projection);
 }
 
 void Maze::update(float delta_time) {
+	Level::update(delta_time);
 }
 
 inline bool Maze::valid_neighbor(const map_square_pos_t & pos) {
@@ -78,8 +81,40 @@ void Maze::generate_maze() {
 	}
 }
 
+void Maze::generate_mesh() {
+	std::vector<float> mesh_positions;
+	std::vector<float> mesh_tex_coords;
+	std::vector<unsigned int> mesh_indices;
+
+	const float tile_width = 2.0f;
+	const float tile_height = 2.0f;
+
+	for (int i = 0; i < m_map_buffer.size(); ++i) {
+		int square_x = i % m_width;
+		int square_y = i / m_width;
+
+		if (m_map_buffer[i] == empty) {
+			if (m_map_buffer[i - m_width] == wall) { // top wall
+
+			}
+
+			if (m_map_buffer[i - 1] == wall) { // left wall
+
+			}
+
+			if (m_map_buffer[i + m_width] == wall) { // bottom wall
+
+			}
+
+			if (m_map_buffer[i + 1] == wall) { // right wall
+				
+			}
+		}
+	}
+}
+
 std::ostream & operator<<(std::ostream & stream, const Maze & maze) {
-	for (int i = 0; i < maze.m_map_buffer.size(); ++i) {
+	for (unsigned int i = 0; i < maze.m_map_buffer.size(); ++i) {
 		stream << (maze.m_map_buffer[i] == maze.wall ? '#' : ' ');
 
 		if ((i + 1) % maze.m_width == 0) {
