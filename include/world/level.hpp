@@ -9,6 +9,8 @@
 #include <array>
 #include <memory>
 
+#include <SDL2/SDL.h>
+
 class Level {
 	private:
 		static constexpr std::size_t max_entities = 200;
@@ -23,7 +25,7 @@ class Level {
 
 		bool m_recalculate_matrix = true;
 
-	protected:
+	public:
 		const vec_t<float>& get_camera_eye();
 		const vec_t<float>& get_camera_at();
 
@@ -38,6 +40,7 @@ class Level {
 		Level(const Level&) = delete;
 		Level& operator=(const Level&) = delete;
 
+		virtual void event(const SDL_Event& event);
 		virtual void render(GraphicsContext & context, const mat_t<float> & projection);
 		virtual void update(float delta_time);
 

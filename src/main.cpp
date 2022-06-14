@@ -16,6 +16,7 @@
 #include "world/level.hpp"
 #include "world/cube.hpp"
 #include "world/maze.hpp"
+#include "world/player.hpp"
 
 const unsigned int window_width = 1366;
 const unsigned int window_height = 768;
@@ -67,6 +68,9 @@ void run(SDL_Window * window) {
     Cube& cube = level->add_entity<Cube>();
     cube.set_position(vec_t<float>(0.0f, 0.0f, 10.0f));
 
+    Player& player = level->add_entity<Player>();
+    player.set_position(vec_t<float>(0.0f, 2.0f, 10.0f));
+
     auto last_time = std::chrono::steady_clock::now();
     mat_t<float> projection_mat = perspective(window_width / 2, window_height / 2, PI_f / 3.0f);
 
@@ -94,6 +98,8 @@ void run(SDL_Window * window) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
+            } else {
+                level->event(event);
             }
         }
     }

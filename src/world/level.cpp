@@ -33,6 +33,14 @@ Level::Level() :
 
 Level::~Level() {}
 
+void Level::event(const SDL_Event& event) {
+	for (int i = 0; i < max_entities; ++i) {
+		if (m_entities[i]) {
+			m_entities[i]->event(event);
+		}
+	}
+}
+
 void Level::render(GraphicsContext & context, const mat_t<float>& projection) {
 	mat_t<float> view_matrix = get_view_matrix();
 

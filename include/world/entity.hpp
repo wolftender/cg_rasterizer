@@ -4,6 +4,8 @@
 
 #include "graphics/context.hpp"
 
+#include <SDL2/SDL.h>
+
 class Level;
 class Entity {
 	private:
@@ -26,6 +28,7 @@ class Entity {
 		void set_rotation(const vec_t<float> & rotation);
 		void set_scale(const vec_t<float> & scale);
 
+		virtual void event(const SDL_Event& event) = 0;
 		virtual void update(Level & level, float delta_time) = 0;
 		virtual void render(GraphicsContext & context, const mat_t<float> & projection, const mat_t<float> & view) = 0;
 };

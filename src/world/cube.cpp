@@ -35,6 +35,7 @@ Model Cube::generate_cube_model(std::string texture) {
 
 Cube::Cube() : m_model(generate_cube_model("assets/cobblestone.png")) { }
 
+void Cube::event(const SDL_Event & event) { }
 void Cube::update(Level & level, float delta_time) { }
 
 void Cube::render(GraphicsContext & context, const mat_t<float> & projection, const mat_t<float> & view) {

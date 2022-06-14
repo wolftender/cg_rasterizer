@@ -26,6 +26,7 @@ class Maze : public Level {
 	public:
 		Maze(int width, int height);
 
+		void event(const SDL_Event& event) override;
 		void render(GraphicsContext & context, const mat_t<float> & projection) override;
 		void update(float delta_time) override;
 

@@ -1,4 +1,5 @@
 #include "world/maze.hpp"
+#include "math/transform.hpp"
 
 #include <stdexcept>
 #include <stack>
@@ -16,8 +17,14 @@ Maze::Maze(int width, int height) {
 	generate_mesh();
 }
 
+void Maze::event(const SDL_Event& event) {
+	Level::event(event);
+}
+
 void Maze::render(GraphicsContext & context, const mat_t<float> & projection) {
 	Level::render(context, projection);
+
+	m_model->render(context, projection, get_view_matrix() * translation(vec_t<float>(-2.0f, 0.0f, 0.0f)));
 }
 
 void Maze::update(float delta_time) {
@@ -86,31 +93,74 @@ void Maze::generate_mesh() {
 	std::vector<float> mesh_tex_coords;
 	std::vector<unsigned int> mesh_indices;
 
-	const float tile_width = 2.0f;
-	const float tile_height = 2.0f;
+	const float tw = 6.0f; // tile width
+	const float th = 6.0f; // tile height
+	const float wh = 6.0f; // wall height
 
-	for (int i = 0; i < m_map_buffer.size(); ++i) {
+	for (int i = 0, j = 0; i < m_map_buffer.size(); ++i) {
 		int square_x = i % m_width;
 		int square_y = i / m_width;
 
-		if (m_map_buffer[i] == empty) {
-			if (m_map_buffer[i - m_width] == wall) { // top wall
+		float tx = square_x * tw;
+		float ty = square_y * th;
 
+		if (m_map_buffer[i] == empty) {
+			std::vector<float> positions = {
+				tx, 	 0.0f, ty + th,
+				tx + tw, 0.0f, ty + th,
+				tx, 	 0.0f, ty,
+				tx + tw, 0.0f, ty,
+
+				// top vertices
+				tx, 	 wh,   ty + th,
+				tx + tw, wh,   ty + th,
+				tx, 	 wh,   ty,
+				tx + tw, wh,   ty
+			};
+
+			std::vector<float> tex_coords = {
+				1.0f, 0.0f,
+				0.0f, 1.0f,
+				1.0f, 1.0f,
+				1.0f, 0.0f,
+				0.0f, 0.0f,
+				0.0f, 1.0f
+			};
+
+			std::vector<unsigned int> indices;
+
+			if (m_map_buffer[i - m_width] == wall) { // top wall
+				indices.insert(indices.end(), { 5, 0, 1, 5, 4, 0 });
+				mesh_tex_coords.insert(mesh_tex_coords.end(), tex_coords.begin(), tex_coords.end());
 			}
 
 			if (m_map_buffer[i - 1] == wall) { // left wall
-
+				indices.insert(indices.end(), { 4, 2, 0, 4, 6, 2 });
+				mesh_tex_coords.insert(mesh_tex_coords.end(), tex_coords.begin(), tex_coords.end());
 			}
 
 			if (m_map_buffer[i + m_width] == wall) { // bottom wall
-
+				indices.insert(indices.end(), { 6, 3, 2, 6, 7, 3 });
+				mesh_tex_coords.insert(mesh_tex_coords.end(), tex_coords.begin(), tex_coords.end());
 			}
 
 			if (m_map_buffer[i + 1] == wall) { // right wall
-				
+				indices.insert(indices.end(), { 7, 1, 3, 7, 5, 1 });
+				mesh_tex_coords.insert(mesh_tex_coords.end(), tex_coords.begin(), tex_coords.end());
 			}
+
+			for (int k = 0; k < indices.size(); ++k) {
+				indices[k] = (j * 8) + indices[k];
+			}
+
+			mesh_positions.insert(mesh_positions.end(), positions.begin(), positions.end());
+			mesh_indices.insert(mesh_indices.end(), indices.begin(), indices.end());
+
+			j = j + 1;
 		}
 	}
+
+	m_model = std::make_unique<Model>(mesh_positions, mesh_indices, mesh_tex_coords, Texture("assets/bricks.png"));
 }
 
 std::ostream & operator<<(std::ostream & stream, const Maze & maze) {
