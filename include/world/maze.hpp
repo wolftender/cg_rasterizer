@@ -25,6 +25,7 @@ class Maze : public Level {
 
 	public:
 		Maze(int width, int height);
+		Maze(int width, int height, std::vector<unsigned int> map);
 
 		void event(const SDL_Event& event) override;
 		void render(GraphicsContext & context, const mat_t<float> & projection) override;

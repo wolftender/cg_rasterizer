@@ -1,6 +1,6 @@
 #include "world/cube.hpp"
 
-class Player : public Entity {
+class Player : public Cube {
     private:
         bool m_move_left, m_move_right, m_move_forward, m_move_reverse;
 

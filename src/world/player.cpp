@@ -41,7 +41,7 @@ void Player::update(Level & level, float delta_time) {
     }
 
     // update camera
-    vec_t<float> cam_direction(-1.0f, 0.0f, 0.0f);
+    vec_t<float> cam_direction(-10.0f, 4.0f, 0.0f);
     cam_direction = transform * cam_direction;
 
     level.set_camera_at(get_position());
@@ -49,5 +49,5 @@ void Player::update(Level & level, float delta_time) {
 }
 
 void Player::render(GraphicsContext& context, const mat_t<float> & projection, const mat_t<float> & view) {
-    //Cube::render(context, projection, view);
+    Cube::render(context, projection, view);
 }

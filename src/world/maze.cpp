@@ -17,6 +17,22 @@ Maze::Maze(int width, int height) {
 	generate_mesh();
 }
 
+Maze::Maze(int width, int height, std::vector<unsigned int> map) {
+	m_width = width;
+	m_height = height;
+
+	if (m_width * m_height != map.size()) {
+		throw std::runtime_error("invalid map data");
+	}
+
+	m_map_buffer.resize(map.size());
+	for (int i = 0; i < map.size(); ++i) {
+		m_map_buffer[i] = (map[i]) ? wall : empty;
+	}
+
+	generate_mesh();
+}
+
 void Maze::event(const SDL_Event& event) {
 	Level::event(event);
 }
@@ -129,7 +145,7 @@ void Maze::generate_mesh() {
 
 			std::vector<unsigned int> indices;
 
-			if (m_map_buffer[i - m_width] == wall) { // top wall
+			if (m_map_buffer[i + m_width] == wall) { // top wall
 				indices.insert(indices.end(), { 5, 0, 1, 5, 4, 0 });
 				mesh_tex_coords.insert(mesh_tex_coords.end(), tex_coords.begin(), tex_coords.end());
 			}
@@ -139,7 +155,7 @@ void Maze::generate_mesh() {
 				mesh_tex_coords.insert(mesh_tex_coords.end(), tex_coords.begin(), tex_coords.end());
 			}
 
-			if (m_map_buffer[i + m_width] == wall) { // bottom wall
+			if (m_map_buffer[i - m_width] == wall) { // bottom wall
 				indices.insert(indices.end(), { 6, 3, 2, 6, 7, 3 });
 				mesh_tex_coords.insert(mesh_tex_coords.end(), tex_coords.begin(), tex_coords.end());
 			}

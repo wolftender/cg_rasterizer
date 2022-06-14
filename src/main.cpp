@@ -63,6 +63,16 @@ int main(int argc, char ** argv) {
 
 void run(SDL_Window * window) {
     GraphicsContext * context = new GraphicsContext(window, window_width / 2, window_height / 2);
+    /*Level * level = new Maze(7, 7, {
+        1, 1, 1, 1, 1, 1, 1,
+        1, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 1, 0, 0, 1,
+        1, 0, 1, 1, 1, 0, 1,
+        1, 0, 0, 1, 0, 0, 1,
+        1, 0, 0, 0, 0, 0, 1,
+        1, 1, 1, 1, 1, 1, 1
+    });*/
+
     Level * level = new Maze(15, 15);
 
     Cube& cube = level->add_entity<Cube>();
