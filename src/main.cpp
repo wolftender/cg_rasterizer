@@ -75,11 +75,14 @@ void run(SDL_Window * window) {
 
     Level * level = new Maze(15, 15);
 
-    Cube& cube = level->add_entity<Cube>();
-    cube.set_position(vec_t<float>(0.0f, 0.0f, 10.0f));
+    vec_t<float> start_pos = level->get_start_pos();
+    start_pos[1] = 3.0f;
+
+    Cube& cube = level->add_entity<Cube>("assets/blue_wool.png");
+    cube.set_position(start_pos);
 
     Player& player = level->add_entity<Player>();
-    player.set_position(vec_t<float>(0.0f, 2.0f, 10.0f));
+    player.set_position(start_pos);
 
     auto last_time = std::chrono::steady_clock::now();
     mat_t<float> projection_mat = perspective(window_width / 2, window_height / 2, PI_f / 3.0f);

@@ -1,6 +1,6 @@
 #include "world/cube.hpp"
 
-Model Cube::generate_cube_model(std::string texture) {
+Model Cube::generate_cube_model(const std::string& texture) {
     std::vector<float> positions = {
         -1, -1, -1,
         1, -1, -1,
@@ -34,6 +34,7 @@ Model Cube::generate_cube_model(std::string texture) {
 }
 
 Cube::Cube() : m_model(generate_cube_model("assets/cobblestone.png")) { }
+Cube::Cube(const std::string& texture) : m_model(generate_cube_model(texture)) { }
 
 void Cube::event(const SDL_Event & event) { }
 void Cube::update(Level & level, float delta_time) { }

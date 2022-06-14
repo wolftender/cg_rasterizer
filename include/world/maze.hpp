@@ -7,6 +7,9 @@
 
 class Maze : public Level {
 	private:
+		static constexpr float tile_width = 6.0f;
+		static constexpr float tile_height = 6.0f;
+
 		enum map_square_t {
 			wall = 0,
 			empty = 1
@@ -30,6 +33,9 @@ class Maze : public Level {
 		void event(const SDL_Event& event) override;
 		void render(GraphicsContext & context, const mat_t<float> & projection) override;
 		void update(float delta_time) override;
+
+		bool can_move(const vec_t<float>& position) override;
+		vec_t<float> get_start_pos() override;
 
 	private:
 		inline bool valid_neighbor(const map_square_pos_t& pos);

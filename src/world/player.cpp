@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+Player::Player() : Cube("assets/blue_wool.png") {}
+
 void Player::event(const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
         bool value = (event.type == SDL_KEYDOWN);
@@ -22,7 +24,7 @@ void Player::update(Level & level, float delta_time) {
     mat_t<float> transform = rotation_y(rot_y);
 
     if (m_move_left || m_move_right) {
-        float angular_velocity = (m_move_left) ? 1.0f : -1.0f;
+        float angular_velocity = (m_move_right) ? 1.0f : -1.0f;
 
         vec_t<float> rotation = get_rotation();
         rotation[1] = rotation[1] + delta_time * angular_velocity;
@@ -31,17 +33,19 @@ void Player::update(Level & level, float delta_time) {
     }
 
     if (m_move_forward || m_move_reverse) {
-        float velocity = (m_move_forward) ? 4.0f : -4.0f;
+        float velocity = (m_move_forward) ? 8.0f : -8.0f;
 
         vec_t<float> direction(1.0f, 0.0f, 0.0f);
         vec_t<float> current_pos = get_position();
         vec_t<float> next_pos = current_pos + delta_time * velocity * (transform * direction);
 
-        set_position(next_pos);
+        if (level.can_move(next_pos)) {
+            set_position(next_pos);
+        }
     }
 
     // update camera
-    vec_t<float> cam_direction(-10.0f, 4.0f, 0.0f);
+    vec_t<float> cam_direction(-1.0f, 0.0f, 0.0f);
     cam_direction = transform * cam_direction;
 
     level.set_camera_at(get_position());
@@ -49,5 +53,5 @@ void Player::update(Level & level, float delta_time) {
 }
 
 void Player::render(GraphicsContext& context, const mat_t<float> & projection, const mat_t<float> & view) {
-    Cube::render(context, projection, view);
+    //Cube::render(context, projection, view);
 }

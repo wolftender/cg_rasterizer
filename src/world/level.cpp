@@ -59,7 +59,7 @@ void Level::update(float delta_time) {
 	}
 }
 
-bool Level::can_move(vec_t<float> position) {
+bool Level::can_move(const vec_t<float>& position) {
 	return true;
 }
 

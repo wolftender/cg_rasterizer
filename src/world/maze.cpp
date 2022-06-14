@@ -40,7 +40,7 @@ void Maze::event(const SDL_Event& event) {
 void Maze::render(GraphicsContext & context, const mat_t<float> & projection) {
 	Level::render(context, projection);
 
-	m_model->render(context, projection, get_view_matrix() * translation(vec_t<float>(-2.0f, 0.0f, 0.0f)));
+	m_model->render(context, projection, get_view_matrix());
 }
 
 void Maze::update(float delta_time) {
@@ -56,6 +56,21 @@ inline bool Maze::valid_neighbor(const map_square_pos_t & pos) {
 
 inline unsigned int Maze::get_index(const map_square_pos_t & pos) {
 	return (pos.y * m_width) + pos.x;
+}
+
+bool Maze::can_move(const vec_t<float>& position) {
+	float x = position[0];
+	float y = position[2];
+
+	int map_x = x / tile_width;
+	int map_y = y / tile_height;
+
+	if (map_x < 0 || map_x > m_height || map_y < 0 || map_y >= m_height) return true;
+	return (m_map_buffer[map_y * m_width + map_x] != wall);
+}
+
+vec_t<float> Maze::get_start_pos() {
+	return vec_t<float>(1.5f * tile_width, 0.0f, 1.5f * tile_width);
 }
 
 void Maze::generate_maze() {
@@ -109,9 +124,9 @@ void Maze::generate_mesh() {
 	std::vector<float> mesh_tex_coords;
 	std::vector<unsigned int> mesh_indices;
 
-	const float tw = 6.0f; // tile width
-	const float th = 6.0f; // tile height
-	const float wh = 6.0f; // wall height
+	const float tw = tile_width; // tile width
+	const float th = tile_width; // tile height
+	const float wh = tile_height; // wall height
 
 	for (int i = 0, j = 0; i < m_map_buffer.size(); ++i) {
 		int square_x = i % m_width;

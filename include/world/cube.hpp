@@ -9,10 +9,11 @@ class Cube : public Entity {
 		Model m_model;
 
 	private:
-		Model generate_cube_model(std::string texture);
+		Model generate_cube_model(const std::string& texture);
 
 	public:
 		Cube();
+		Cube(const std::string& texture);
 
 		void event(const SDL_Event& event) override;
 		void update(Level & level, float delta_time) override;

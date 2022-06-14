@@ -44,8 +44,8 @@ class Level {
 		virtual void render(GraphicsContext & context, const mat_t<float> & projection);
 		virtual void update(float delta_time);
 
-		bool can_move(vec_t<float> position);
-		vec_t<float> get_start_pos();
+		virtual bool can_move(const vec_t<float>& position);
+		virtual vec_t<float> get_start_pos();
 
 		const mat_t<float> & get_view_matrix();
 
