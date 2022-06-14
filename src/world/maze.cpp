@@ -40,6 +40,7 @@ void Maze::event(const SDL_Event& event) {
 void Maze::render(GraphicsContext & context, const mat_t<float> & projection) {
 	Level::render(context, projection);
 
+	m_floor_model->render(context, projection, get_view_matrix());
 	m_model->render(context, projection, get_view_matrix());
 }
 
@@ -192,6 +193,29 @@ void Maze::generate_mesh() {
 	}
 
 	m_model = std::make_unique<Model>(mesh_positions, mesh_indices, mesh_tex_coords, Texture("assets/bricks.png"));
+
+	std::vector<float> floor_positions = {
+		0.0f, 0.0f, 0.0f,
+		m_width * tw, 0.0f, 0.0f,
+		m_width * tw, 0.0f, m_height * th,
+		0.0f, 0.0f, m_height * th
+	};
+
+	std::vector<unsigned int> floor_indices = {
+		0, 1, 2, 
+		0, 2, 3
+	};
+
+	std::vector<float> floor_tex_coords = {
+		0.0f, 0.0f,
+		m_width * 1.0f, 0.0f,
+		m_width * 1.0f, m_height * 1.0f,
+		0.0f, 0.0f,
+		m_width * 1.0f, m_height * 1.0f,
+		0.0f, m_height * 1.0f
+	};
+
+	m_floor_model = std::make_unique<Model>(floor_positions, floor_indices, floor_tex_coords, Texture("assets/oak_planks.png"));
 }
 
 std::ostream & operator<<(std::ostream & stream, const Maze & maze) {

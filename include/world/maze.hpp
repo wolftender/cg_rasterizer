@@ -25,6 +25,7 @@ class Maze : public Level {
 		int m_height;
 
 		std::unique_ptr<Model> m_model;
+		std::unique_ptr<Model> m_floor_model;
 
 	public:
 		Maze(int width, int height);
