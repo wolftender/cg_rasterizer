@@ -4,7 +4,12 @@
 
 #include <iostream>
 
-Player::Player() : Cube("assets/blue_wool.png") {}
+Player::Player() : Cube("assets/blue_wool.png") {
+    m_move_forward = false;
+    m_move_left = false;
+    m_move_reverse = false;
+    m_move_right = false;
+}
 
 void Player::event(const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
