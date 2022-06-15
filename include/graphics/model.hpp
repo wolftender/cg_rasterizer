@@ -35,7 +35,7 @@ class Model {
 
     private:
         void fill_scanlines(GraphicsContext& context, const triangle_t& triangle, const float area, const int min_x, const int max_x, const int min_y, const int max_y, const int step);
-        void fill_triangle(GraphicsContext& context, triangle_t& triangle, const mat_t<float>& projection);
+        void fill_triangle(GraphicsContext& context, triangle_t& triangle, const mat_t<float>& projection, bool wireframe = false);
 
         // inline functions
         inline float signed_distance(const vec_t<float>& normal, float d, const vec_t<float>& point);

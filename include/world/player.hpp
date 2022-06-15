@@ -1,3 +1,4 @@
+#pragma once
 #include "world/cube.hpp"
 
 class Player : public Cube {

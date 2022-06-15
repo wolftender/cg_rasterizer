@@ -141,6 +141,8 @@ void Model::render(GraphicsContext& context, const mat_t<float>& projection, con
         float d1 = signed_distance(clip_normal, clip_d, wv_triangle.v1.pos);
         float d2 = signed_distance(clip_normal, clip_d, wv_triangle.v2.pos);
         float d3 = signed_distance(clip_normal, clip_d, wv_triangle.v3.pos);
+
+        bool wireframe = context.is_wireframe();
         
         const int condition = ((d3 > 0) << 2) | ((d2 > 0) << 1) | (d1 > 0);
         switch (condition) {
@@ -149,45 +151,45 @@ void Model::render(GraphicsContext& context, const mat_t<float>& projection, con
 
             case 0b011: // (II)
                 clip_triangle(clip_normal, clip_d, wv_triangle.v1, wv_triangle.v2, wv_triangle.v3, t1, t2);
-                fill_triangle(context, t1, projection);
-                fill_triangle(context, t2, projection);
+                fill_triangle(context, t1, projection, wireframe);
+                fill_triangle(context, t2, projection, wireframe);
                 break;
 
             case 0b101: // (III)
                 clip_triangle(clip_normal, clip_d, wv_triangle.v3, wv_triangle.v1, wv_triangle.v2, t1, t2);
-                fill_triangle(context, t1, projection);
-                fill_triangle(context, t2, projection);
+                fill_triangle(context, t1, projection, wireframe);
+                fill_triangle(context, t2, projection, wireframe);
                 break;
 
             case 0b110: // (I)
                 clip_triangle(clip_normal, clip_d, wv_triangle.v2, wv_triangle.v3, wv_triangle.v1, t1, t2);
-                fill_triangle(context, t1, projection);
-                fill_triangle(context, t2, projection);
+                fill_triangle(context, t1, projection, wireframe);
+                fill_triangle(context, t2, projection, wireframe);
                 break;
 
             case 0b001: // (VI)
                 clip_triangle(clip_normal, clip_d, wv_triangle.v1, wv_triangle.v2, wv_triangle.v3);
-                fill_triangle(context, wv_triangle, projection);
+                fill_triangle(context, wv_triangle, projection, wireframe);
                 break;
 
             case 0b010: // (V)
                 clip_triangle(clip_normal, clip_d, wv_triangle.v2, wv_triangle.v3, wv_triangle.v1);
-                fill_triangle(context, wv_triangle, projection);
+                fill_triangle(context, wv_triangle, projection, wireframe);
                 break;
 
             case 0b100: // (IV)
                 clip_triangle(clip_normal, clip_d, wv_triangle.v3, wv_triangle.v1, wv_triangle.v2);
-                fill_triangle(context, wv_triangle, projection);
+                fill_triangle(context, wv_triangle, projection, wireframe);
                 break;
 
             case 0b111: // 111 (VII)
-                fill_triangle(context, wv_triangle, projection);
+                fill_triangle(context, wv_triangle, projection, wireframe);
                 break;
         }
     }
 }
 
-void Model::fill_triangle(GraphicsContext& context, triangle_t& triangle, const mat_t<float>& projection) {  
+void Model::fill_triangle(GraphicsContext& context, triangle_t& triangle, const mat_t<float>& projection, bool wireframe) {  
     int width = context.get_width();
     int height = context.get_height();
 
@@ -201,6 +203,9 @@ void Model::fill_triangle(GraphicsContext& context, triangle_t& triangle, const 
 
     // area of the triangle, used in baricentric coordinates
     float area = edge_function(triangle.v1.pos, triangle.v2.pos, triangle.v3.pos);
+    if (area < 0) { // backface culling
+        return;
+    }
 
     int min_x = std::min({triangle.v1.pos[0], triangle.v2.pos[0], triangle.v3.pos[0]});
     int max_x = std::max({triangle.v1.pos[0], triangle.v2.pos[0], triangle.v3.pos[0]});
@@ -212,19 +217,13 @@ void Model::fill_triangle(GraphicsContext& context, triangle_t& triangle, const 
     max_y = std::min(height, max_y + 1);
     max_x = std::min(width, max_x + 1);
 
-    #ifdef MULTITHREADING
-        std::thread worker_1(&Model::fill_scanlines, this, std::ref(context), std::ref(triangle), area, min_x, max_x, min_y + 0, max_y, 4);
-        std::thread worker_2(&Model::fill_scanlines, this, std::ref(context), std::ref(triangle), area, min_x, max_x, min_y + 1, max_y, 4);
-        std::thread worker_3(&Model::fill_scanlines, this, std::ref(context), std::ref(triangle), area, min_x, max_x, min_y + 2, max_y, 4);
-        std::thread worker_4(&Model::fill_scanlines, this, std::ref(context), std::ref(triangle), area, min_x, max_x, min_y + 3, max_y, 4);
-
-        worker_1.join();
-        worker_2.join();
-        worker_3.join();
-        worker_4.join();
-    #else
+    if (!wireframe) {
         fill_scanlines(context, triangle, area, min_x, max_x, min_y, max_y, 1);
-    #endif
+    } else {
+        context.draw_line(triangle.v1.pos[0], triangle.v1.pos[1], triangle.v2.pos[0], triangle.v2.pos[1], color_t(0, 255, 0));
+        context.draw_line(triangle.v2.pos[0], triangle.v2.pos[1], triangle.v3.pos[0], triangle.v3.pos[1], color_t(0, 255, 0));
+        context.draw_line(triangle.v3.pos[0], triangle.v3.pos[1], triangle.v1.pos[0], triangle.v1.pos[1], color_t(0, 255, 0));
+    }
 }
 
 void Model::fill_scanlines(GraphicsContext& context, const triangle_t& triangle, const float area, const int min_x, const int max_x, const int min_y, const int max_y, const int step) {

@@ -28,9 +28,14 @@ class GraphicsContext {
         std::chrono::steady_clock::time_point m_last_frame;
         unsigned int m_frames, m_frameTimer, m_fpsAvg;
 
+        bool m_wireframe;
+
     public:
         unsigned int get_width();
         unsigned int get_height();
+
+        void set_wireframe(bool value);
+        bool is_wireframe();
 
     public:
         GraphicsContext(SDL_Window * window, unsigned int resX, unsigned int resY);

@@ -1,11 +1,15 @@
 #include "world/maze.hpp"
+
 #include "math/transform.hpp"
 
 #include <stdexcept>
 #include <stack>
 #include <random>
 
-Maze::Maze(int width, int height) {
+Maze::Maze(int width, int height)  : 
+	m_player(add_entity<Player>()),
+	m_start_cube(add_entity<Cube>("assets/blue_wool.png")) {
+
 	m_width = width;
 	m_height = height;
 
@@ -15,9 +19,13 @@ Maze::Maze(int width, int height) {
 
 	generate_maze();
 	generate_mesh();
+	initialize_world();
 }
 
-Maze::Maze(int width, int height, std::vector<unsigned int> map) {
+Maze::Maze(int width, int height, std::vector<unsigned int> map) : 
+	m_player(add_entity<Player>()),
+	m_start_cube(add_entity<Cube>("assets/blue_wool.png")) {
+
 	m_width = width;
 	m_height = height;
 
@@ -31,6 +39,16 @@ Maze::Maze(int width, int height, std::vector<unsigned int> map) {
 	}
 
 	generate_mesh();
+	initialize_world();
+}
+
+void Maze::initialize_world() {
+	// setup the level
+	vec_t<float> start_pos = get_start_pos();
+    start_pos[1] = 3.0f;
+
+    m_start_cube.set_position(start_pos);
+	m_player.set_position(start_pos);
 }
 
 void Maze::event(const SDL_Event& event) {
@@ -45,6 +63,11 @@ void Maze::render(GraphicsContext & context, const mat_t<float> & projection) {
 }
 
 void Maze::update(float delta_time) {
+	vec_t<float> rot = m_start_cube.get_rotation();
+	rot[1] += delta_time;
+	rot[0] += delta_time;
+	m_start_cube.set_rotation(rot);
+
 	Level::update(delta_time);
 }
 
@@ -64,10 +87,14 @@ bool Maze::can_move(const vec_t<float>& position) {
 	float y = position[2];
 
 	int map_x = x / tile_width;
-	int map_y = y / tile_height;
+	int map_y = y / tile_width;
 
 	if (map_x < 0 || map_x > m_height || map_y < 0 || map_y >= m_height) return true;
 	return (m_map_buffer[map_y * m_width + map_x] != wall);
+}
+
+vec_t<float> Maze::get_tile_pos(int x, int y) {
+	return vec_t<float>(x * tile_width, 0.0f, y * tile_width);
 }
 
 vec_t<float> Maze::get_start_pos() {

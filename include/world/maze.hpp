@@ -1,5 +1,8 @@
 #pragma once
 #include "world/level.hpp"
+#include "world/player.hpp"
+#include "world/cube.hpp"
+
 #include "graphics/model.hpp"
 
 #include <vector>
@@ -27,6 +30,9 @@ class Maze : public Level {
 		std::unique_ptr<Model> m_model;
 		std::unique_ptr<Model> m_floor_model;
 
+		Player & m_player;
+		Cube & m_start_cube;
+
 	public:
 		Maze(int width, int height);
 		Maze(int width, int height, std::vector<unsigned int> map);
@@ -38,9 +44,13 @@ class Maze : public Level {
 		bool can_move(const vec_t<float>& position) override;
 		vec_t<float> get_start_pos() override;
 
+		vec_t<float> get_tile_pos(int x, int y);
+
 	private:
 		inline bool valid_neighbor(const map_square_pos_t& pos);
 		inline unsigned int get_index(const map_square_pos_t& pos);
+
+		void initialize_world();
 		void generate_maze();
 		void generate_mesh();
 

@@ -13,6 +13,14 @@ unsigned int GraphicsContext::get_height() {
     return m_height;
 }
 
+bool GraphicsContext::is_wireframe() {
+    return m_wireframe;
+}
+
+void GraphicsContext::set_wireframe(bool value) {
+    m_wireframe = value;
+}
+
 GraphicsContext::GraphicsContext(SDL_Window * window, unsigned int resX, unsigned int resY) {
     m_window = window;
 
@@ -28,6 +36,7 @@ GraphicsContext::GraphicsContext(SDL_Window * window, unsigned int resX, unsigne
     m_frameTimer = 0;
     m_frames = 0;
     m_fpsAvg = 0;
+    m_wireframe = false;
 
     m_font = TTF_OpenFont("assets/font.ttf", 32);
     if (!m_font) {
@@ -48,8 +57,13 @@ GraphicsContext::~GraphicsContext() {
         SDL_DestroyRenderer(m_renderer);
     }
 
-    delete m_buffer;
-    delete m_depthBuffer;
+    if (m_buffer) {
+        delete [] m_buffer;
+    }
+
+    if (m_depthBuffer) {
+        delete [] m_depthBuffer;
+    }
 }
 
 void GraphicsContext::clear() {
@@ -125,7 +139,7 @@ void GraphicsContext::set_pixel(unsigned int x, unsigned int y, const color_t& c
 }
 
 void GraphicsContext::set_pixel_s(unsigned int x, unsigned int y, const color_t& color) {
-    if (x < 0 || y < 0 || x >= m_width || y >= m_width) return;
+    if (x < 0 || y < 0 || x >= m_width || y >= m_height) return;
     set_pixel(x, y, color);
 }
 

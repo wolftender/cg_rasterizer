@@ -16,6 +16,7 @@
 #include "world/level.hpp"
 #include "world/cube.hpp"
 #include "world/maze.hpp"
+#include "world/room.hpp"
 #include "world/player.hpp"
 
 const unsigned int window_width = 1366;
@@ -63,26 +64,8 @@ int main(int argc, char ** argv) {
 
 void run(SDL_Window * window) {
     GraphicsContext * context = new GraphicsContext(window, window_width / 2, window_height / 2);
-    /*Level * level = new Maze(7, 7, {
-        1, 1, 1, 1, 1, 1, 1,
-        1, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 1, 0, 0, 1,
-        1, 0, 1, 1, 1, 0, 1,
-        1, 0, 0, 1, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 1,
-        1, 1, 1, 1, 1, 1, 1
-    });*/
 
-    Level * level = new Maze(15, 15);
-
-    vec_t<float> start_pos = level->get_start_pos();
-    start_pos[1] = 3.0f;
-
-    Cube& cube = level->add_entity<Cube>("assets/blue_wool.png");
-    cube.set_position(start_pos);
-
-    Player& player = level->add_entity<Player>();
-    player.set_position(start_pos);
+    Level * level = new Room();
 
     auto last_time = std::chrono::steady_clock::now();
     mat_t<float> projection_mat = perspective(window_width / 2, window_height / 2, PI_f / 3.0f);
@@ -99,11 +82,6 @@ void run(SDL_Window * window) {
 
         level->update(elapsed);
 
-        vec_t<float> rot = cube.get_rotation();
-        rot[1] += elapsed;
-        rot[0] += elapsed;
-        cube.set_rotation(rot);
-
         context->clear();
         level->render(*context, projection_mat);
         context->present();
@@ -112,6 +90,12 @@ void run(SDL_Window * window) {
             if (event.type == SDL_QUIT) {
                 running = false;
             } else {
+                if (event.type == SDL_KEYUP) {
+                    if (event.key.keysym.sym == SDL_KeyCode::SDLK_o) {
+                        context->set_wireframe(!context->is_wireframe());
+                    }
+                }
+
                 level->event(event);
             }
         }

@@ -8,7 +8,7 @@ SRC := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/**/*.cpp)
 OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
 CPPFLAGS := -Iinclude `pkg-config --cflags sdl2`
-CFLAGS := -Wall -O2
+CFLAGS := -Wall -Ofast
 LDFLAGS :=
 LDLIBS := `pkg-config --libs sdl2` -lSDL2_ttf -lSDL2_image
 
