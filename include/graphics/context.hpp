@@ -52,8 +52,8 @@ class GraphicsContext {
         void set_pixel(unsigned int x, unsigned int y, const color_t& color);
         void set_pixel_s(unsigned int x, unsigned int y, const color_t& color);
         void draw_line(int x0, int y0, int x1, int y1, const color_t& color);
+        void render_text(int x, int y, const char * text);
 
     private:
         void setup_texture();
-        void render_text(int x, int y, const char * text);
 };
