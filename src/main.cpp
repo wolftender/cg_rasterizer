@@ -22,7 +22,7 @@
 const unsigned int window_width = 1366;
 const unsigned int window_height = 768;
 
-void run(SDL_Window * window);
+void run(SDL_Window * window, Level * start_level);
 
 int main(int argc, char ** argv) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -49,7 +49,20 @@ int main(int argc, char ** argv) {
         throw std::runtime_error("failed to create sdl2 window context: " + std::string(SDL_GetError()));
     }
 
-    run(window);
+    Level * level = nullptr;
+    if (argc > 1) {
+        std::string level_name = std::string(argv[1]);
+
+        if (level_name == "maze") {
+            level = new Maze(15, 15);
+        }
+    }
+
+    if (!level) {
+        level = new Room();
+    }
+
+    run(window, level);
 
     // cleanup
     SDL_DestroyWindow(window);
@@ -62,10 +75,9 @@ int main(int argc, char ** argv) {
     return 0;
 }
 
-void run(SDL_Window * window) {
+void run(SDL_Window * window, Level * start_level) {
     GraphicsContext * context = new GraphicsContext(window, window_width / 2, window_height / 2);
-
-    Level * level = new Room();
+    Level * level = start_level;
 
     auto last_time = std::chrono::steady_clock::now();
     mat_t<float> projection_mat = perspective(window_width / 2, window_height / 2, PI_f / 3.0f);
