@@ -28,8 +28,8 @@ Model Sphere::generate_sphere_model(const std::string& texture) {
         for (int j = 0; j < m; ++j) {
             int index = (i * m) + j + 1;
 
-            float alpha = 2.0f*M_PIf*j/(float)m;
-            float beta = (float)(M_PIf/(n + 1)) * (float)(i + 1);
+            float alpha = 2.0f*PI_f*j/(float)m;
+            float beta = (float)(PI_f/(n + 1)) * (float)(i + 1);
 
             positions[3 * index + 0] = radius * cos(alpha) * sin(beta); 
             positions[3 * index + 1] = radius * cos(beta); 

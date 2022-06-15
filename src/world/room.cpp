@@ -25,7 +25,7 @@ Room::Room() : Maze(9, 8, std::vector<unsigned int> {
 
 void Room::update(float delta_time) {
     vec_t<float> rotation_s1 = m_sphere1.get_rotation();
-    rotation_s1[1] = rotation_s1[1] + delta_time * M_PIf * 0.4f;
+    rotation_s1[1] = rotation_s1[1] + delta_time * PI_f * 0.4f;
 
     m_sphere1.set_rotation(rotation_s1);
 
